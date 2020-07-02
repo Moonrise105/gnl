@@ -17,11 +17,14 @@ size_t		ft_strlen(const char *str)
 	size_t k;
 
 	k = 0;
-	while (*str)
-	{
-		k++;
-		str++;
-	}
+    if (str)
+    {
+        while (*str)
+        {
+            k++;
+            str++;
+        }
+    }
 	return (k);
 }
 

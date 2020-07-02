@@ -30,5 +30,5 @@ void		ft_strclr(char *s);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
 void		*ft_memcpy(void *dest, const void *src, size_t count);
 
-int 		get_next_line(int fd, char **line);
+int			get_next_line(int fd, char **line);
 #endif

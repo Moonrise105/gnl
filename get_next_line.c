@@ -1,4 +1,3 @@
-/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
@@ -11,33 +10,44 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUFFER_SIZE 32
+//#define BUFFER_SIZE 32
+
 
 char *check_read_buff(char *read_buff, char **line)
 {
 	char *p;
+    //char *end;
 
 	p = NULL;
 	
-	if (read_buff)
+	if (read_buff && ft_strlen(read_buff))
 	{
-		
+		//printf("[%s]\n", read_buff);
 		if ((p = ft_strchr(read_buff, '\n')))
 		{
+            //end = &read_buff[ft_strlen(read_buff) - 1];
 			*p = '\0';
 			*line = ft_strdup(read_buff);
-			++p;
-			ft_strlcpy(read_buff, p, ft_strlen(p));
+            
+            ++p;
+            //printf("p = [%s]\n", p);
+            // if (p < end)
+            // {
+			//     ++p;
+            // }
+            //printf("line={[%s]} readbuff = [%s]\n", *line, read_buff);
+			ft_strlcpy(read_buff, p, ft_strlen(p) + 1);
 		}
 		else
 		{
 			*line = ft_strdup(read_buff);
+            //printf("line={[%s]} readbuff = [%s]\n", *line, read_buff);
 			ft_strclr(read_buff);
+            
 		}
 	}
 	else
 	{
-		//printf("in");
 		*line = ft_strdup("\0");
 	}
 	return (p);
@@ -53,11 +63,13 @@ int get_next_line(int fd, char **line)
 	
 	//read_buff = NULL;
 	n_pos = NULL;
-	// if (fd == -1)
-	// 	return (-1);
 
-	if (fd < 0 || !line || (read(fd, buff, 0)) < 0)
-		return (-1);
+    //printf("[%s]\n", read_buff);
+	if (fd < 0 || !line || (read(fd, buff, 0)) < 0 || BUFFER_SIZE < 1)
+    {
+        return (-1);
+    }
+		
 	n_pos = check_read_buff(read_buff, line);
 	while (!n_pos && (read_len = read(fd, buff, BUFFER_SIZE)))
 	{
@@ -73,29 +85,48 @@ int get_next_line(int fd, char **line)
 		*line = ft_strjoin(*line, buff);
 		free(tmp);
 	}
-	return ((read_len || ft_strlen(*line)) ? 1 : 0);	
+	return ((read_len || ft_strlen(*line) || ft_strlen(read_buff)) ? 1 : 0);	
 }
 
-int main(void)
-{
-	char *line;
-	int fd;
+// int main(void)
+// {
+// 	char *line;
+// 	int fd;
+// 	int i;
 
-	line = NULL;
-	//line = "g";
-	//fd = open("42TESTERS-GNL/files/half_marge_top", O_RDONLY);
-	fd = open("file", O_RDONLY);
-	//get_next_line(fd, &line);
+// 	line = NULL;
+// 	//line = "g";
+// 	//fd = open("42TESTERS-GNL/files/half_marge_top", O_RDONLY);
+// 	fd = open("file", O_RDONLY);
+// 	//get_next_line(fd, &line);
 	
-	while(get_next_line(fd, &line))
-	{
-		printf("%s\n", line);
-		free(line);
-	}
-	//printf("s\n")
-		
-	//printf("%s\n", line);
-	//free(line);
-	close(fd);
-	return (0);
-}
+//     int k = 1;
+
+// 	while((i = get_next_line(fd, &line)) > 0)
+// 	{
+//         k += 1;
+// 		printf("%s\n", line);
+// 		printf("[%d]", i);
+// 		//free(line);
+//         //line = NULL;
+// 	}
+// 	printf("%s\n", line);
+// 	free(line);
+// 	//get_next_line(fd, &line);
+// 	//printf("%d\n", k);
+// 	printf("%d\n", i);
+// 	//printf("%s",line);
+//     //printf("%d", k);
+//     //line = ft_strdup("hello");
+//     //get_next_line(fd, &line);
+//     //printf("{%s}\n", line);
+//     //printf("%d\n", get_next_line(fd, &line));
+//     //printf("%s\n", line);
+
+//     //printf("%d\n", get_next_line(fd, &line));
+// 	//printf("s\n")
+// 	//printf("%s\n", line);
+// 	//free(line);
+// 	close(fd);
+// 	return (0);
+// }
