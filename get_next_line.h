@@ -6,7 +6,7 @@
 /*   By: ctobias <ctobias@student.21.ru>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/31 17:25:15 by ctobias           #+#    #+#             */
-/*   Updated: 2020/06/15 00:42:40 by ctobias          ###   ########.fr       */
+/*   Updated: 2020/07/13 23:28:51 by ctobias          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-
+typedef struct		s_list
+{
+	int				fd;
+	struct s_list	*next;
+}					t_list;				
 
 char		*ft_strchr(const char *s, int c);
 char		*ft_strjoin(char const *s1, char const *s2);

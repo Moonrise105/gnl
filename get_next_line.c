@@ -1,47 +1,38 @@
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ctobias <ctobias@student.21.ru>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/31 17:29:00 by ctobias           #+#    #+#             */
-/*   Updated: 2020/06/15 00:38:40 by ctobias          ###   ########.fr       */
+/*   Created: 2020/06/15 00:38:40 by ctobias           #+#    #+#             */
+/*   Updated: 2020/07/13 23:09:25 by ctobias          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
 //#define BUFFER_SIZE 32
+#include "get_next_line.h"
 
-
-char *check_read_buff(char *read_buff, char **line)
+char *check_read_buff(char *read_buff, char **line, int *flag)
 {
 	char *p;
-    //char *end;
 
 	p = NULL;
 	
 	if (read_buff && ft_strlen(read_buff))
 	{
-		//printf("[%s]\n", read_buff);
 		if ((p = ft_strchr(read_buff, '\n')))
 		{
-            //end = &read_buff[ft_strlen(read_buff) - 1];
+			*flag = 1;
 			*p = '\0';
 			*line = ft_strdup(read_buff);
-            
             ++p;
-            //printf("p = [%s]\n", p);
-            // if (p < end)
-            // {
-			//     ++p;
-            // }
-            //printf("line={[%s]} readbuff = [%s]\n", *line, read_buff);
+			//printf("p = %s\n", p);
 			ft_strlcpy(read_buff, p, ft_strlen(p) + 1);
 		}
 		else
 		{
 			*line = ft_strdup(read_buff);
-            //printf("line={[%s]} readbuff = [%s]\n", *line, read_buff);
 			ft_strclr(read_buff);
             
 		}
@@ -60,73 +51,71 @@ int get_next_line(int fd, char **line)
 	static char *read_buff;
 	char 		*n_pos;
 	char		*tmp;
-	
-	//read_buff = NULL;
-	n_pos = NULL;
+	int flag;
 
-    //printf("[%s]\n", read_buff);
+	flag = 0;
+	
+	n_pos = NULL;
 	if (fd < 0 || !line || (read(fd, buff, 0)) < 0 || BUFFER_SIZE < 1)
     {
         return (-1);
     }
 		
-	n_pos = check_read_buff(read_buff, line);
+	n_pos = check_read_buff(read_buff, line, &flag);
+	//printf("{%s}\n", n_pos);
 	while (!n_pos && (read_len = read(fd, buff, BUFFER_SIZE)))
 	{
 		buff[read_len] = '\0';
 		if ((n_pos = ft_strchr(buff, '\n')))
 		{
 			*n_pos = '\0';
-			if (read_buff)
-				free(read_buff);
+			// if (read_buff)
+			// {
+			// 	free(read_buff);
+			// 	read_buff = NULL;
+			// }
+				
 			read_buff = ft_strdup(++n_pos);
 		}
 		tmp = *line;
 		*line = ft_strjoin(*line, buff);
 		free(tmp);
 	}
-	return ((read_len || ft_strlen(*line) || ft_strlen(read_buff)) ? 1 : 0);	
+	if (read_len  || ft_strlen(read_buff) || flag)
+	{
+		return (1);
+	}
+	else 
+	{
+		// if (read_buff)
+		// 	free(read_buff);
+		// if (*line)
+		// 	free(*line);
+		return (0);
+	}
+	//return ((read_len  || ft_strlen(read_buff) || flag) ? 1 : 0); //mb bez ft_strlen(*line)
 }
 
-// int main(void)
-// {
-// 	char *line;
-// 	int fd;
-// 	int i;
+int main(void)
+{
+	char *line;
+	int fd;
 
-// 	line = NULL;
-// 	//line = "g";
-// 	//fd = open("42TESTERS-GNL/files/half_marge_top", O_RDONLY);
-// 	fd = open("file", O_RDONLY);
-// 	//get_next_line(fd, &line);
+	int i;
+
+	line = NULL;
+;
+	fd = open("4_newlines", O_RDONLY);
 	
-//     int k = 1;
 
-// 	while((i = get_next_line(fd, &line)) > 0)
-// 	{
-//         k += 1;
-// 		printf("%s\n", line);
-// 		printf("[%d]", i);
-// 		//free(line);
-//         //line = NULL;
-// 	}
-// 	printf("%s\n", line);
-// 	free(line);
-// 	//get_next_line(fd, &line);
-// 	//printf("%d\n", k);
-// 	printf("%d\n", i);
-// 	//printf("%s",line);
-//     //printf("%d", k);
-//     //line = ft_strdup("hello");
-//     //get_next_line(fd, &line);
-//     //printf("{%s}\n", line);
-//     //printf("%d\n", get_next_line(fd, &line));
-//     //printf("%s\n", line);
-
-//     //printf("%d\n", get_next_line(fd, &line));
-// 	//printf("s\n")
-// 	//printf("%s\n", line);
-// 	//free(line);
-// 	close(fd);
-// 	return (0);
-// }
+	while((i = get_next_line(fd, &line)) > 0)
+	{
+		printf("|%s\n", line);
+		free(line);
+        //line = NULL;
+	}
+	printf("%s\n", line);
+	free(line);
+	close(fd);
+	return (0);
+}
